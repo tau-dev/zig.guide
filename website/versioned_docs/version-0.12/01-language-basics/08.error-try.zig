@@ -1,19 +1,20 @@
 // hide-start
 const expect = @import("std").testing.expect;
+const MyErrorSet = error{ Critical, Recoverable };
 
-fn failingFunction() error{Oops}!void {
-    return error.Oops;
+fn failingFunction() MyErrorSet!void {
+    return error.Recoverable;
 }
 
 //hide-end
-fn failFn() error{Oops}!i32 {
+fn failFn() MyErrorSet!i32 {
     try failingFunction();
     return 12;
 }
 
 test "try" {
     const v = failFn() catch |err| {
-        try expect(err == error.Oops);
+        try expect(err == error.Recoverable);
         return;
     };
     try expect(v == 12); // is never reached
